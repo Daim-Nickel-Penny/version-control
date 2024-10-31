@@ -4,7 +4,9 @@ import router from "./router";
 
 const app = express();
 
-app.use(cors()); // Accept all requests from any origin - TODO: This should be adapted to our needs
+app.use(cors());
+app.use(express.json());
+
 app.use("/", router);
 
 app.get("/", (req, res) => {
