@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id
+
+  username String  @unique
+  email    String  @unique
+  password String
+  bio      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  repos        Repo[] @relation("UserRepos")
+  starredRepos Repo[] @relation("StarredRepos")
+}
+
+model Repo {
+  id Int @id
+
+  name        String
+  path        String
+  language    String
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int
+  user   User @relation("UserRepos", fields: [userId], references: [id])
+
+  branches  Branch[]
+  files     File[]
+  starredBy User[]   @relation("StarredRepos")
+}
+
+model Branch {
+  id   Int    @id
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  repoId Int
+  repo   Repo @relation(fields: [repoId], references: [id])
+}
+
+model File {
+  id Int @id
+
+  path     String
+  language String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  repoId Int
+  repo   Repo @relation(fields: [repoId], references: [id])
+}
