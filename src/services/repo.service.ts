@@ -2,6 +2,8 @@ import { Repo } from "@prisma/client";
 import prisma from "../prisma";
 import branchService from "./branch.service";
 import commitService from "./commit.service";
+import fileService from "./file.service";
+import { FileParams } from "../types/fileParams";
 
 /**
  * Creates a repository
@@ -13,6 +15,8 @@ const createRepo = async (
   repo: Omit<Repo, "id" | "createdAt" | "updatedAt" | "username">,
   commitMessage: string,
   branchName: string,
+  isDefaultBranch: boolean,
+  files: FileParams[],
 ) => {
   try {
     const newRepo = await prisma.repo.create({
@@ -26,8 +30,17 @@ const createRepo = async (
       },
     });
 
-    const branch = await branchService.createBranch(branchName, newRepo.id);
+    const branch = await branchService.createBranch(
+      branchName,
+      newRepo.id,
+      isDefaultBranch,
+    );
     const commit = await commitService.createCommit(newRepo.id, commitMessage);
+
+    const createFiles = files.map(async (eachFile) => {
+      const newFile = await fileService.createFile(newRepo.id, eachFile);
+      return newFile;
+    });
 
     return newRepo;
   } catch (e) {
@@ -36,6 +49,25 @@ const createRepo = async (
 };
 
 /** */
+
+const commitRepo = async (
+  repoId: string,
+  commitMessage: string,
+  files: FileParams[],
+) => {
+  try {
+    const commit = await commitService.createCommit(repoId, commitMessage);
+
+    /**Issue: There's a bug. You can as of now add same file twice */
+    const createFiles = files.map(async (eachFile) => {
+      const newFile = await fileService.createFile(repoId, eachFile);
+    });
+
+    return commit;
+  } catch (e) {
+    throw e;
+  }
+};
 
 /**
  * Retrieves the repository with the given id
@@ -87,6 +119,37 @@ const getRepoByName = async (name: string) => {
   }
 };
 
+const getRepoById = async (id: string) => {
+  try {
+    const repo = await prisma.repo.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        branches: {
+          take: 10,
+          orderBy: {
+            updatedAt: "desc",
+          },
+        },
+        commits: {
+          take: 10,
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+        files: {
+          take: 100,
+        },
+      },
+    });
+
+    return repo;
+  } catch (e) {
+    throw e;
+  }
+};
+
 /**
  * Updates the repository with the given id
  * @param id
@@ -117,5 +180,8 @@ export default {
   createRepo,
   getAllReposByUsername,
   getRepoByName,
+  getRepoById,
   updateRepo,
+
+  commitRepo,
 };

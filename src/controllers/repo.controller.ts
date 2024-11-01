@@ -12,19 +12,36 @@ import repoService from "../services/repo.service";
  * @param res
  * @param next
  */
+
 const createRep = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username } = req.params;
-    const { newRepo, commitMessage, branchName } = req.body;
+    const { newRepo, commitMessage, branchName, files, isDefaultBranch } =
+      req.body;
 
     const newRepoCreated = await repoService.createRepo(
       username,
       newRepo,
       commitMessage,
       branchName,
+      files,
+      isDefaultBranch,
     );
 
     res.json(newRepoCreated);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const commitRepo = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { repoId } = req.params;
+    const { commitMessage, files } = req.body;
+
+    const commit = await repoService.commitRepo(repoId, commitMessage, files);
+
+    res.json(commit);
   } catch (e) {
     next(e);
   }
@@ -73,6 +90,16 @@ const getRepoByName = async (
   }
 };
 
+const getRepoById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const repo = await repoService.getRepoById(id);
+    res.json(repo);
+  } catch (e) {
+    next(e);
+  }
+};
+
 const updateRepo = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
@@ -88,7 +115,9 @@ const updateRepo = async (req: Request, res: Response, next: NextFunction) => {
 
 export default {
   createRep,
+  commitRepo,
   getAllReposByUsername,
   getRepoByName,
+  getRepoById,
   updateRepo,
 };
