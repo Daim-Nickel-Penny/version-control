@@ -19,6 +19,8 @@ const createCommit = async (repoId: string, commitMessage: string) => {
         },
       },
     });
+    console.log("newCommit");
+    console.log(newCommit);
     return newCommit;
   } catch (e) {
     throw e;

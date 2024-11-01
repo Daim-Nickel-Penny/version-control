@@ -7,7 +7,8 @@ import repoService from "../services/repo.service";
  * @param res body is the {
  *  newRepo: repoData,
  *  branchName: branchName,
- *  commitMessage: commitData
+ *  commitMessage: commitData,
+ *  isDefaultBranch: boolean
  * }
  * @param res
  * @param next
@@ -16,7 +17,7 @@ import repoService from "../services/repo.service";
 const createRep = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username } = req.params;
-    const { newRepo, commitMessage, branchName, files, isDefaultBranch } =
+    const { newRepo, commitMessage, branchName, isDefaultBranch, files } =
       req.body;
 
     const newRepoCreated = await repoService.createRepo(
@@ -24,8 +25,8 @@ const createRep = async (req: Request, res: Response, next: NextFunction) => {
       newRepo,
       commitMessage,
       branchName,
-      files,
       isDefaultBranch,
+      files,
     );
 
     res.json(newRepoCreated);
@@ -38,7 +39,7 @@ const commitRepo = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { repoId } = req.params;
     const { commitMessage, files } = req.body;
-
+    console.log(req.body);
     const commit = await repoService.commitRepo(repoId, commitMessage, files);
 
     res.json(commit);

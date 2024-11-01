@@ -25,6 +25,9 @@ const createBranch = async (
       },
     });
 
+    console.log("newBranch");
+    console.log(newBranch);
+
     return newBranch;
   } catch (e) {
     throw e;
