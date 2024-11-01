@@ -27,6 +27,43 @@ const createCommit = async (repoId: string, commitMessage: string) => {
   }
 };
 
+/**
+ * Retrieves the commit with the given id
+ * @param id
+ * @returns commit
+ 
+ */
+const getCommitById = async (id: string) => {
+  try {
+    const commit = await prisma.commit.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        repo: {
+          select: {
+            name: true,
+            language: true,
+            path: true,
+            files: {
+              select: {
+                id: true,
+                path: true,
+                language: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return commit;
+  } catch (e) {
+    throw e;
+  }
+};
+
 export default {
   createCommit,
+  getCommitById,
 };
