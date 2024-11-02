@@ -33,9 +33,6 @@ importers:
       '@types/express-serve-static-core':
         specifier: ^5.0.1
         version: 5.0.1
-      '@types/jest':
-        specifier: ^29.5.14
-        version: 29.5.14
       '@types/node':
         specifier: ^22.8.5
         version: 22.8.5
@@ -45,9 +42,6 @@ importers:
       concurrently:
         specifier: ^9.0.1
         version: 9.0.1
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.8.5)(ts-node@10.9.2(@types/node@22.8.5)(typescript@5.6.3))
       nodemon:
         specifier: ^3.1.7
         version: 3.1.7
@@ -429,9 +423,6 @@ packages:
 
   '@types/istanbul-reports@3.0.4':
     resolution: {integrity: sha512-pk2B1NWalF9toCRu6gjBzR69syFjP4Od8WRAX+0mmf9lAjCRicLOWc+ZrxZHx/0XRjotgkF9t6iaMJ+aXcOdZQ==}
-
-  '@types/jest@29.5.14':
-    resolution: {integrity: sha512-ZN+4sdnLUbo8EVvVc2ao0GFW6oVrQRPn4K2lglySj7APvSrgzxHiNNK99us4WDMi57xxA2yggblIAMNhXOotLQ==}
 
   '@types/methods@1.1.4':
     resolution: {integrity: sha512-ymXWVrDiCxTBE3+RIrrP533E70eA+9qu7zdWoHuOmGujkYtzf4HQF96b8nwHLqhuf4ykX61IGRIB38CC6/sImQ==}
@@ -2344,11 +2335,6 @@ snapshots:
   '@types/istanbul-reports@3.0.4':
     dependencies:
       '@types/istanbul-lib-report': 3.0.3
-
-  '@types/jest@29.5.14':
-    dependencies:
-      expect: 29.7.0
-      pretty-format: 29.7.0
 
   '@types/methods@1.1.4': {}
 
